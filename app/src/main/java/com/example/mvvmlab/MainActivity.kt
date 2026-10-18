@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +34,11 @@ fun TaskScreen(viewModel: TaskViewModel = viewModel()) {
     val tasks by viewModel.tasks.collectAsStateWithLifecycle()
 // Purely UI state: text being typed. This does NOT belong in the ViewModel.
     var newTitle by remember { mutableStateOf("") }
+
+    val showOnlyOpen by viewModel.showOnlyOpen.collectAsStateWithLifecycle()
+
+    val visibleTasks = viewModel.getVisibleTasks(tasks, showOnlyOpen)
+
     Column(Modifier.padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
@@ -52,17 +58,40 @@ fun TaskScreen(viewModel: TaskViewModel = viewModel()) {
                 Text("Add")
             }
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Show only open tasks",
+                modifier = Modifier.weight(1f)
+            )
+            Switch(
+                checked = showOnlyOpen,
+                onCheckedChange = { viewModel.setShowOnlyOpen(it) }
+            )
+        }
         Column(Modifier.padding(top = 16.dp)) {
-            tasks.forEach { task ->
+            visibleTasks.forEach { visibleTasks ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
-                        checked = task.done,
-                        onCheckedChange = { viewModel.toggleDone(task.id) }
+                        checked = visibleTasks.done,
+                        onCheckedChange = { viewModel.toggleDone(visibleTasks.id) }
                     )
-                    Text(task.title)
+                    Text(
+                        visibleTasks.title,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Button(
+                        onClick = { viewModel.deleteTask(visibleTasks.id) }
+                    ) {
+                        Text("Delete")
+                    }
                 }
             }
         }

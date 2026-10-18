@@ -14,6 +14,11 @@ class TaskViewModel(
     // Public read-only state: the UI can observe it but not modify it
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
     // Events from the UI come in as functions
+
+    private val _showOnlyOpen = MutableStateFlow(false)
+    val showOnlyOpen: StateFlow<Boolean> = _showOnlyOpen.asStateFlow()
+
+
     fun toggleDone(taskId: Int) {
         _tasks.update { list ->
             list.map { task ->
@@ -28,4 +33,23 @@ class TaskViewModel(
             list + Task(id = nextId, title = title.trim())
         }
     }
+
+    fun deleteTask(taskId: Int) {
+        _tasks.update { list ->
+            list.filter { task -> task.id != taskId }
+        }
+    }
+
+    fun setShowOnlyOpen(onlyOpen: Boolean) {
+        _showOnlyOpen.value = onlyOpen
+    }
+
+    fun getVisibleTasks(tasks: List<Task>, onlyOpen: Boolean): List<Task> {
+        return if (onlyOpen) {
+            tasks.filter { !it.done }
+        } else {
+            tasks
+        }
+    }
+
 }

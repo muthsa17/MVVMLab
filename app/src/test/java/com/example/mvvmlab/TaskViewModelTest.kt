@@ -38,4 +38,29 @@ class TaskViewModelTest {
         viewModel.addTask(" ")
         assertEquals(2, viewModel.tasks.value.size)
     }
+
+    @Test
+    fun deleteTask_existingId_removesTaskFromList() {
+        val viewModel = TaskViewModel(FakeRepository())
+
+        viewModel.deleteTask(1)
+
+        // 1. Jumlah task seharusnya tersisa 1
+        assertEquals(1, viewModel.tasks.value.size)
+        // 2. Task dengan id == 1 sudah tidak ada lagi di dalam list
+        assertFalse(viewModel.tasks.value.any { it.id == 1 })
+        // 3. Task yang tersisa adalah task dengan id == 2
+        assertEquals(2, viewModel.tasks.value.first().id)
+    }
+
+    @Test
+    fun deleteTask_nonExistentId_keepsList() {
+        val viewModel = TaskViewModel(FakeRepository())
+
+        // Memanggil deleteTask dengan ID 99 yang tidak ada di list
+        viewModel.deleteTask(99)
+
+        // Jumlah list tetap
+        assertEquals(2, viewModel.tasks.value.size)
+    }
 }

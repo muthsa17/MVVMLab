@@ -1,5 +1,6 @@
 # Dokumentasi Error Project
 
-| No | Part | Symptom/pesan error | Penyebab | Solusi | Screenshot                                      |
-|----|------|---------------------|----------|--------|-------------------------------------------------|
-| 1  |  |                 |      |   | |
+| No | Part         | Symptom/pesan error/bug                                                                                                             | Penyebab                                                                                     | Solusi                                        | Screenshot                     |
+|----|--------------|-------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|-----------------------------------------------|--------------------------------|
+| 1  | Unit Testing | `This type is final, so it cannot be inherited from` dan `'loadInitialTasks' in 'TaskRepository' is final and cannot be overridden` | class `TaskRepository` dan function `loadInitialTasks()` bersifat `final`                    | menambahkan `open` didepan class dan function | ![Screenshot](UnitTesting.png) |
+| 2  | Filter       | Task dengan status `done` terlihat ketika toggle yang hanya menampilkan task aktif/open (belum berstatus `done`) diaktifkan         | variabel yang menyimpan list Task yang aktif belum diganti saat `for each` di `MainActivity.kt` | mengganti variabel yang digunakan di `for aech` |  |
